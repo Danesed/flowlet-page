@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FlowLet: Conditional 3D Brain MRI Synthesis using Wavelet Flow Matching</title>
+<meta name="description" content="FlowLet performs Flow Matching in an invertible 3D wavelet domain for fast, age-conditioned, anatomically faithful 3D brain MRI synthesis. Published in Medical Image Analysis." />
+
+<!-- Open Graph / social preview -->
+<meta property="og:title" content="FlowLet: Conditional 3D Brain MRI Synthesis using Wavelet Flow Matching" />
+<meta property="og:description" content="Flow Matching in an invertible 3D wavelet domain: fast, age-conditioned, anatomically faithful 3D brain MRI synthesis (Medical Image Analysis)." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://danesed.github.io/flowlet-page/" />
+<meta property="og:image" content="https://danesed.github.io/flowlet-page/static/images/architecture.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+
+<!-- ============================ NAV ============================ -->
+<nav class="nav">
+  <div class="wrap">
+    <div class="brand">Flow<span>Let</span></div>
+    <div class="links">
+      <a href="#highlights">Highlights</a>
+      <a href="#abstract">Abstract</a>
+      <a href="#challenge">Challenge</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#metrics">Perspective</a>
+      <a href="#code">Code</a>
+      <a href="#cite">Cite</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================ HERO ============================ -->
+<header class="hero">
+  <div class="wrap">
+    <span class="venue-badge">● Accepted at Medical Image Analysis (Elsevier)</span>
+    <h1>FlowLet: Conditional 3D Brain MRI Synthesis using <span class="lit">Wavelet Flow Matching</span></h1>
+
+    <p class="authors">
+      <a href="#">Danilo Danese</a><sup>1,&#42;</sup>,
+      <a href="#">Angela Lombardi</a><sup>1,&#42;</sup>,
+      <a href="#">Matteo Attimonelli</a><sup>1,2</sup>,
+      <a href="#">Giuseppe Fasano</a><sup>1</sup>,
+      <a href="#">Tommaso Di Noia</a><sup>1</sup>
+    </p>
+    <p class="affil"><sup>1</sup> Politecnico di Bari, Italy &nbsp;·&nbsp; <sup>2</sup> Sapienza University of Rome, Italy</p>
+    <p class="corr"><sup>&#42;</sup> Corresponding authors</p>
+
+    <div class="btn-row">
+      <a class="btn primary" href="https://www.sciencedirect.com/journal/medical-image-analysis" target="_blank" rel="noopener"><span class="ico">📄</span> Paper (MedIA)</a>
+      <a class="btn" href="https://arxiv.org/pdf/2601.05212" target="_blank" rel="noopener"><span class="ico">📄</span> arXiv preprint</a>
+      <a class="btn blue" href="https://github.com/sisinflab/FlowLet" target="_blank" rel="noopener"><span class="ico">&lt;/&gt;</span> Official code</a>
+      <a class="btn" href="https://github.com/Danesed/FlowLet" target="_blank" rel="noopener"><span class="ico">⎇</span> Development code</a>
+      <a class="btn" href="#cite"><span class="ico">❝</span> BibTeX</a>
+    </div>
+    <p class="paper-note">The <b>Medical Image Analysis</b> article is the peer-reviewed version of record. The arXiv preprint is an earlier version and may differ from the published paper.</p>
+  </div>
+
+  <div class="wrap" style="margin-top:34px">
+    <figure class="fig">
+      <img src="static/images/architecture.png" alt="FlowLet architecture: a real 3D MRI is transformed by a 3D Haar DWT into eight wavelet subbands; a velocity-predicting U-Net with ResBlock+FiLM and spatial conditioning is trained with an MSE flow-matching loss; at inference an ODE integration loop followed by the inverse DWT produces a synthetic sample." />
+      <figcaption><b>FlowLet pipeline.</b> A 3D Haar transform maps the volume to wavelet space, a conditional velocity U-Net is trained with a flow-matching objective, and the inverse transform reconstructs the synthetic MRI. Age enters via FiLM and spatial cross-attention.</figcaption>
+    </figure>
+  </div>
+</header>
+
+<!-- ============================ HIGHLIGHTS ============================ -->
+<section id="highlights">
+  <div class="wrap">
+    <p class="eyebrow">Highlights</p>
+    <h2 class="section-title">What FlowLet does</h2>
+    <p class="section-lead">A single-stage generative framework that brings Flow Matching into a fixed, invertible wavelet domain: fast to sample, controllable, and anatomically faithful.</p>
+    <div class="grid cols-3">
+      <div class="card"><span class="badge">1</span><h3>Wavelet flow matching</h3><p>Generative modeling directly in the 3D Haar wavelet domain — multi-scale, with no learned latent compression.</p></div>
+      <div class="card peach"><span class="badge">2</span><h3>Age conditioning</h3><p>Complementary FiLM modulation and spatially adaptive cross-attention give explicit control over localized, age-related morphology.</p></div>
+      <div class="card green"><span class="badge">3</span><h3>Fast deterministic sampling</h3><p>Deterministic ODE sampling generates high-quality volumes in just a few steps.</p></div>
+      <div class="card"><span class="badge">4</span><h3>Region- &amp; task-aware eval</h3><p>Evaluation across 95 cortical/subcortical regions and a downstream brain-age prediction study, beyond global metrics.</p></div>
+      <div class="card peach"><span class="badge">5</span><h3>Open &amp; reproducible</h3><p>Methodology, code, and evaluation protocols are released free and open-source.</p></div>
+      <div class="card green"><span class="badge">+</span><h3>Accessible to train</h3><p>A ~1B-parameter 3D U-Net that trains within 24&nbsp;GB of VRAM.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ABSTRACT ============================ -->
+<section id="abstract">
+  <div class="wrap">
+    <p class="eyebrow gray" style="text-align:center">Abstract</p>
+    <div class="abstract">
+      <p>Generative modeling for 3D brain MRI is challenged by a trade-off between anatomical fidelity, sample diversity, and computational efficiency. Diffusion-based approaches achieve strong visual quality but typically require hundreds to thousands of sampling steps, while latent-space compression can introduce reconstruction artifacts and degrade fine-grained anatomy. We introduce <b>FlowLet</b>, a conditional generative framework that performs Flow Matching in an invertible 3D wavelet domain. This representation enables multi-scale generation without learned latent compression, while deterministic ODE sampling allows fast inference. Age conditioning is modeled through complementary feature-wise modulation and spatially adaptive cross-attention, enabling explicit control over age-related morphological variation. Across multi-site neuroimaging datasets, FlowLet achieves competitive and, in several settings, superior global fidelity compared to diffusion-based baselines using as few as 10 sampling steps. Region-based evaluation across 95 cortical and subcortical brain regions demonstrates improved local anatomical plausibility beyond what is captured by global similarity metrics alone. In a downstream brain age prediction study, models augmented with FlowLet-generated data consistently reduce prediction error relative to real-only training and other generative baselines. The proposed framework is released as open-source to support reproducibility.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CHALLENGE ============================ -->
+<section id="challenge">
+  <div class="wrap">
+    <p class="eyebrow peach">The challenge</p>
+    <h2 class="section-title">Why 3D brain MRI synthesis is hard</h2>
+    <p class="section-lead">Brain-age prediction needs large, diverse, age-balanced cohorts — yet public 3D MRI datasets are demographically skewed, and existing generators force a hard trade-off.</p>
+
+    <div class="grid cols-3" style="margin-bottom:22px">
+      <div class="card peach"><h3>The generative trilemma</h3><p>Sample quality, diversity, and sampling efficiency pull against each other, improving one usually degrades another.</p></div>
+      <div class="card peach"><h3>Fidelity vs. compression</h3><p>Latent compression speeds things up but can blur fine-grained anatomy that age-related analysis depends on.</p></div>
+      <div class="card peach"><h3>Age imbalance</h3><p>Young and middle-aged adults dominate; pediatric and elderly groups are under-sampled, biasing downstream models.</p></div>
+    </div>
+
+    <figure class="fig plot">
+      <img src="static/images/age_distribution.png" alt="Overlaid age histograms for the OpenBHB, OASIS-3 and ADNI datasets showing a strong young-adult peak from OpenBHB and older-adult coverage from OASIS-3 and ADNI." />
+      <figcaption><b>Age distribution across the integrated cohort.</b> OpenBHB concentrates younger adults, while OASIS-3 and ADNI enrich the 60–95 range, together spanning the lifespan but remaining imbalanced.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================ METHOD ============================ -->
+<section id="method">
+  <div class="wrap">
+    <p class="eyebrow">The method</p>
+    <h2 class="section-title">Flow matching in an invertible wavelet domain</h2>
+    <p class="section-lead">A single-stage pipeline: decompose the volume with an invertible 3D Haar transform, learn a velocity field that transports Gaussian noise to data in wavelet space, then reconstruct with the inverse transform.</p>
+
+    <div class="pipeline" style="margin-bottom:14px">
+      <div class="panel blue">
+        <div class="plabel">Step 1 · Decompose</div>
+        <h4>3D Haar DWT</h4>
+        <p>Each volume is split into one low-frequency subband (coarse anatomy) and seven high-frequency subbands (fine detail), lossless and learning-free.</p>
+        <div class="io"><b>in</b> real 3D MRI &nbsp;→&nbsp; <b>out</b> 8 subbands</div>
+      </div>
+      <div class="panel peach">
+        <div class="plabel">Step 2 · Transport</div>
+        <h4>Velocity U-Net v<sub>θ</sub></h4>
+        <p>A conditional 3D U-Net predicts the flow-matching velocity field. Age is injected via FiLM and spatial cross-attention. Sampled by a deterministic ODE solver.</p>
+        <div class="io"><b>in</b> noise + t + age &nbsp;→&nbsp; <b>out</b> velocity</div>
+      </div>
+      <div class="panel green">
+        <div class="plabel">Step 3 · Reconstruct</div>
+        <h4>3D Haar IDWT</h4>
+        <p>The generated wavelet coefficients are mapped back to a full-resolution volume by the inverse transform, no learned decoder, no compression artifacts.</p>
+        <div class="io"><b>in</b> 8 subbands &nbsp;→&nbsp; <b>out</b> synthetic MRI</div>
+      </div>
+    </div>
+
+    <div class="chips" style="margin:16px 0 26px">
+      <span class="chip blue">3D Haar DWT / IDWT</span>
+      <span class="chip peach">Rectified Flow Matching</span>
+      <span class="chip">CFM · VP · Trigonometric</span>
+      <span class="chip green">FiLM + cross-attention</span>
+      <span class="chip">deterministic ODE</span>
+      <span class="chip">few-step sampling</span>
+    </div>
+
+    <figure class="fig dark">
+      <img src="static/images/brain_aging.png" alt="Axial, coronal and sagittal views of a single synthetic brain generated by FlowLet as the age condition is swept from 6 to 95 years with a fixed noise seed." />
+      <figcaption><b>Age conditioning, one seed.</b> Holding the initial noise fixed and varying only the age condition from 6 to 95 years produces coherent, age-dependent morphological change (axial / coronal / sagittal), the effect of combining FiLM with spatial cross-attention.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================ RESULTS ============================ -->
+<section id="results">
+  <div class="wrap">
+    <p class="eyebrow green">Results</p>
+    <h2 class="section-title">Fast, controllable, and anatomically faithful</h2>
+    <p class="section-lead">FlowLet is competitive on global metrics and stronger where it matters anatomically, region-level fidelity and downstream clinical utility.</p>
+
+    <div class="grid cols-2" style="align-items:center; margin-bottom:30px">
+      <figure class="fig">
+        <img src="static/images/fid_steps.png" alt="Line plot of FID versus number of sampling steps for the RFM, CFM, VP and Trigonometric flow variants." />
+        <figcaption>FID as a function of sampling steps for the four flow formulations.</figcaption>
+      </figure>
+      <div class="grid cols-2" style="gap:14px">
+        <div class="stat"><div class="num blue" style="font-size:1.3rem">Fast Sampling</div><div class="sub">deterministic ODE · no latent compression</div></div>
+        <div class="stat"><div class="num green">0.420</div><div class="lbl">ROI Dice ↑</div><div class="sub">mean over 95 brain regions</div></div>
+        <div class="stat"><div class="num peach">0.298</div><div class="lbl">FID ↓</div><div class="sub">competitive global fidelity</div></div>
+        <div class="stat"><div class="num blue">4.01</div><div class="lbl">Brain-age MAE ↓</div><div class="sub">underrepresented ages</div></div>
+      </div>
+    </div>
+
+    <figure class="fig dark" style="margin-top:18px">
+      <img src="static/images/samples_comparison.png" alt="Axial, coronal and sagittal slices comparing a real scan, FlowLet (Ours), and seven other 3D brain MRI synthesis methods." />
+      <figcaption><b>Qualitative comparison.</b> Real reference vs. FlowLet (<em>Ours</em>) and other methods, shown in three standard planes.</figcaption>
+    </figure>
+
+    <figure class="fig dark" style="margin-top:18px">
+      <img src="static/images/brainseg.png" alt="FastSurfer ROI parcellations (colored region maps) for a real sample, FlowLet variants and other methods across three planes." />
+      <figcaption><b>Region-based anatomical fidelity.</b> Automated parcellation into 95 ROIs for the real reference, FlowLet variants, and other methods, region-level structure that global metrics alone can miss.</figcaption>
+    </figure>
+
+    <div class="grid cols-3" style="margin-top:24px">
+      <div class="card green"><h3>Region-level fidelity</h3><p>FlowLet reaches a mean ROI Dice of 0.420 across all 95 cortical and subcortical structures, preserving anatomy that global metrics can overlook.</p></div>
+      <div class="card"><h3>Competitive global fidelity</h3><p>Strong FID, MMD and MS-SSIM scores while sampling deterministically in only a few steps.</p></div>
+      <div class="card peach"><h3>Better clinical utility</h3><p>Augmenting training with FlowLet samples lowers brain-age prediction error, with a 4.01-year MAE on underrepresented ages.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ METRIC INTERPRETATION ============================ -->
+<section id="metrics">
+  <div class="wrap">
+    <p class="eyebrow peach" style="text-align:center">Perspective</p>
+    <h2 class="section-title" style="text-align:center">Reading the metrics, not just reporting them</h2>
+    <div class="note-block">
+      <p>In volumetric brain MRI a single global score can quietly mislead. Most voxels are background or non-informative, so distribution-level metrics such as FID and MMD can look favorable even when clinically relevant anatomy is wrong, and a generator can be rewarded simply for drifting toward an "average" brain.</p>
+      <p>This is why we treat intra-set <b>MS-SSIM</b> not as a quality target but as a <em>relative diversity signal</em>: interpreted under consistent conditions and read alongside global fidelity and region-level anatomy, it exposes the mode collapse that aggregate numbers hide. Only when these measures are read <b>together</b> do they give an honest, anatomy- and task-aware picture of generative quality, which is exactly why FlowLet is evaluated across 95 regions and a downstream clinical task, not a single headline number.</p>
+      <p class="read-more"><a href="https://arxiv.org/pdf/2601.05212" target="_blank" rel="noopener">How we frame and interpret each metric, and where they break down, in the paper →</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CODE / RESOURCES ============================ -->
+<section id="code">
+  <div class="wrap">
+    <p class="eyebrow">Code &amp; data</p>
+    <h2 class="section-title">Open-source &amp; reproducible</h2>
+    <p class="section-lead">The complete PyTorch implementation, training/generation scripts, and evaluation protocols are released openly.</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>📦 Official implementation</h3>
+        <p style="margin-bottom:12px">The reference release of FlowLet: training, generation, and the dataset catalog.</p>
+        <a class="btn blue" href="https://github.com/sisinflab/FlowLet" target="_blank" rel="noopener">github.com/sisinflab/FlowLet</a>
+      </div>
+      <div class="card">
+        <h3>⎇ Development &amp; enhancements</h3>
+        <p style="margin-bottom:12px">Ongoing development, experiments, and future enhancements.</p>
+        <a class="btn" href="https://github.com/Danesed/FlowLet" target="_blank" rel="noopener">github.com/Danesed/FlowLet</a>
+      </div>
+    </div>
+    <div class="grid cols-3" style="margin-top:18px">
+      <div class="card"><h3>Datasets</h3><p>Built on <a href="https://baobablab.github.io/bhb/dataset" target="_blank" rel="noopener">OpenBHB</a>, <a href="https://adni.loni.usc.edu/" target="_blank" rel="noopener">ADNI</a> and <a href="https://sites.wustl.edu/oasisbrains/" target="_blank" rel="noopener">OASIS-3</a> — 5,794 cognitively-normal T1w scans across 12+ sites.</p></div>
+      <div class="card"><h3>Evaluation</h3><p>Global metrics (FID, MMD, MS-SSIM), region-based ROI analysis over 95 structures, and a downstream brain-age prediction study.</p></div>
+      <div class="card"><h3>License</h3><p>Released under the MIT License for research and reuse.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CITE ============================ -->
+<section id="cite">
+  <div class="wrap">
+    <p class="eyebrow gray">Citation</p>
+    <h2 class="section-title">BibTeX</h2>
+    <p class="section-lead">If you find FlowLet useful, please cite the paper.</p>
+    <div class="copy-row">
+      <span style="font-weight:700; color:var(--muted); font-size:.9rem">FlowLet — arXiv preprint</span>
+      <button class="copy-btn" id="copyBib">Copy</button>
+    </div>
+<pre class="code" id="bib">@article{danese2026flowlet,
+  title={FlowLet: Conditional 3D Brain MRI Synthesis using Wavelet Flow Matching},
+  author={Danese, Danilo and Lombardi, Angela and Attimonelli, Matteo and Fasano, Giuseppe and Di Noia, Tommaso},
+  journal={arXiv preprint arXiv:2601.05212},
+  year={2026}
+}</pre>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer>
+  <div class="wrap">
+    <div style="font-weight:800; letter-spacing:-.02em; font-size:1.1rem">FlowLet</div>
+    <div style="margin-top:8px">
+      <a href="https://github.com/sisinflab/FlowLet" target="_blank" rel="noopener">Official code</a> ·
+      <a href="https://github.com/Danesed/FlowLet" target="_blank" rel="noopener">Development code</a> ·
+      <a href="https://www.sciencedirect.com/journal/medical-image-analysis" target="_blank" rel="noopener">Medical Image Analysis</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Lightbox -->
+<div class="lb" id="lightbox"><img src="" alt="" id="lbimg" /></div>
+
+<script src="static/js/main.js"></script>
+</body>
+</html>
